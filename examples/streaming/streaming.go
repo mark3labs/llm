@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/dataleaplabs/llm"
+	"github.com/dataleap-labs/llm"
 )
 
 // Ensure SimpleStreamHandler implements the StreamHandler interface.

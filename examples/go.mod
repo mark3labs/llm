@@ -2,7 +2,7 @@ module example
 
 go 1.22.7
 
-require github.com/dataleaplabs/llm v0.0.0
+require github.com/dataleap-labs/llm v0.0.0
 
 require (
 	cloud.google.com/go v0.115.0 // indirect
@@ -41,4 +41,4 @@ require (
 	google.golang.org/protobuf v1.36.5 // indirect
 )
 
-replace github.com/dataleaplabs/llm => ../
+replace github.com/dataleap-labs/llm => ../

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/dataleaplabs/llm"
+	"github.com/dataleap-labs/llm"
 )
 
 func main() {

@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 
-	"github.com/dataleaplabs/llm"
+	"github.com/dataleap-labs/llm"
 )
 
 func main() {

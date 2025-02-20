@@ -1,4 +1,4 @@
-module github.com/dataleaplabs/llm
+module github.com/dataleap-labs/llm
 
 go 1.22.7
 
