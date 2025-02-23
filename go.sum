@@ -35,6 +35,8 @@ github.com/googleapis/gax-go/v2 v2.14.1 h1:hb0FFeiPaQskmvakKu5EbCbpntQn48jyHuvrk
 github.com/googleapis/gax-go/v2 v2.14.1/go.mod h1:Hb/NubMaVM88SrNkvl8X/o8XWwDJEPqouaLeN2IUxoA=
 github.com/liushuangls/go-anthropic/v2 v2.13.1 h1:RiLr5Ec7gDFu3BFiT/I65mdUI3+OxSjSHooqY/VLJ+Y=
 github.com/liushuangls/go-anthropic/v2 v2.13.1/go.mod h1:BG+8VNOl7eoEjwW1yhOzFArWA9rzaG2aouth+PQyZgQ=
+github.com/ollama/ollama v0.5.12 h1:qM+k/ozyHLJzEQoAEPrUQ0qXqsgDEEdpIVwuwScrd2U=
+github.com/ollama/ollama v0.5.12/go.mod h1:ibdmDvb/TjKY1OArBWIazL3pd1DHTk8eG2MMjEkWhiI=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/sashabaranov/go-openai v1.37.0 h1:hQQowgYm4OXJ1Z/wTrE+XZaO20BYsL0R3uRPSpfNZkY=

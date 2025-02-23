@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"net/http"
 	"net/url"
 	"strings"
 
@@ -23,7 +24,7 @@ func NewOllamaLLM(host string) (*OllamaLLM, error) {
 		return nil, fmt.Errorf("invalid Ollama host URL: %w", err)
 	}
 
-	client := api.NewClient(baseURL, nil) // Using default http.Client
+	client := api.NewClient(baseURL, http.DefaultClient)
 	return &OllamaLLM{client: client}, nil
 }
 
@@ -85,13 +86,22 @@ func (o *OllamaLLM) CreateChatCompletion(ctx context.Context, req ChatCompletion
 	}
 
 	var finalResponse api.ChatResponse
+	var fullContent strings.Builder
 	err := o.client.Chat(ctx, ollamaReq, func(response api.ChatResponse) error {
+		// Accumulate the content
+		if response.Message.Content != "" {
+			fullContent.WriteString(response.Message.Content)
+		}
+		// Keep track of the final response for metadata
 		finalResponse = response
 		return nil
 	})
 	if err != nil {
 		return ChatCompletionResponse{}, fmt.Errorf("Ollama chat completion failed: %w", err)
 	}
+
+	// Use the accumulated content for the final response
+	finalResponse.Message.Content = fullContent.String()
 
 	return ChatCompletionResponse{
 		Choices: []Choice{
@@ -124,6 +134,8 @@ type ollamaStreamWrapper struct {
 	client  *api.Client
 	request *api.ChatRequest
 	done    bool
+	stream  chan api.ChatResponse // Add this channel to track responses
+	err     error                // Add this to track errors
 }
 
 func (w *ollamaStreamWrapper) Recv() (ChatCompletionResponse, error) {
@@ -131,9 +143,23 @@ func (w *ollamaStreamWrapper) Recv() (ChatCompletionResponse, error) {
 		return ChatCompletionResponse{}, io.EOF
 	}
 
-	var response ChatCompletionResponse
-	err := w.client.Chat(w.ctx, w.request, func(resp api.ChatResponse) error {
-		response = ChatCompletionResponse{
+	select {
+	case <-w.ctx.Done():
+		return ChatCompletionResponse{}, w.ctx.Err()
+	case resp, ok := <-w.stream:
+		if !ok {
+			w.done = true
+			if w.err != nil {
+				return ChatCompletionResponse{}, w.err
+			}
+			return ChatCompletionResponse{}, io.EOF
+		}
+
+		if resp.Message.Content == "" {
+			return ChatCompletionResponse{}, nil
+		}
+
+		response := ChatCompletionResponse{
 			Choices: []Choice{
 				{
 					Index: 0,
@@ -159,14 +185,9 @@ func (w *ollamaStreamWrapper) Recv() (ChatCompletionResponse, error) {
 		if resp.Done {
 			w.done = true
 		}
-		return nil
-	})
 
-	if err != nil {
-		return ChatCompletionResponse{}, fmt.Errorf("Ollama stream receive failed: %w", err)
+		return response, nil
 	}
-
-	return response, nil
 }
 
 func (w *ollamaStreamWrapper) Close() error {
@@ -192,9 +213,32 @@ func (o *OllamaLLM) CreateChatCompletionStream(ctx context.Context, req ChatComp
 		ollamaReq.Options["system"] = *req.SystemPrompt
 	}
 
-	return &ollamaStreamWrapper{
+	stream := make(chan api.ChatResponse, 100)
+	wrapper := &ollamaStreamWrapper{
 		ctx:     ctx,
 		client:  o.client,
 		request: ollamaReq,
-	}, nil
+		stream:  stream,
+	}
+
+	// Start streaming in a goroutine
+	go func() {
+		defer close(stream)
+		err := o.client.Chat(ctx, ollamaReq, func(response api.ChatResponse) error {
+			select {
+			case <-ctx.Done():
+				return ctx.Err()
+			case stream <- response:
+				if response.Done {
+					return io.EOF
+				}
+				return nil
+			}
+		})
+		if err != nil && err != io.EOF {
+			wrapper.err = err
+		}
+	}()
+
+	return wrapper, nil
 }
