@@ -15,9 +15,10 @@ const (
 type LLMProvider string
 
 const (
-	OpenAIProvider LLMProvider = "openai"
-	GeminiProvider LLMProvider = "gemini"
-	ClaudeProvider LLMProvider = "claude"
+	OpenAIProvider  LLMProvider = "openai"
+	GeminiProvider  LLMProvider = "gemini"
+	ClaudeProvider  LLMProvider = "claude"
+	OllamaProvider  LLMProvider = "ollama"
 )
 
 type Model string
