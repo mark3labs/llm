@@ -321,7 +321,7 @@ func setModelConfig(model *genai.GenerativeModel, req ChatCompletionRequest) {
 // isSupported checks if the given model is recognized as a valid Gemini model
 func (g *GeminiLLM) isSupported(model Model) bool {
 	switch model {
-	case ModelGemini2Flash, ModelGemini2FlashLitePreview0205, ModelGemini15Flash, ModelGemini15Flash8B, ModelGemini15Pro:
+	case ModelGemini2Flash, ModelGemini15Flash, ModelGemini15Flash8B, ModelGemini15Pro, ModelGemini2FlashLite001:
 		return true
 	default:
 		return false

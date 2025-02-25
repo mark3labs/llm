@@ -49,7 +49,7 @@ const (
 	ModelClaude3Dot5Haiku20241022  Model = "claude-3-5-haiku-20241022"
 
 	ModelGemini2Flash                Model = "gemini-2.0-flash"
-	ModelGemini2FlashLitePreview0205 Model = "gemini-2.0-flash-lite-preview-02-05"
+	ModelGemini2FlashLite001        Model = "gemini-2.0-flash-lite-001"
 	ModelGemini15Flash               Model = "gemini-1.5-flash"
 	ModelGemini15Flash8B             Model = "gemini-1.5-flash-8b"
 	ModelGemini15Pro                 Model = "gemini-1.5-pro"

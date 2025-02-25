@@ -2,8 +2,6 @@ module github.com/dataleap-labs/llm
 
 go 1.22.7
 
-toolchain go1.22.7
-
 require (
 	github.com/google/generative-ai-go v0.19.0
 	github.com/liushuangls/go-anthropic/v2 v2.13.1
